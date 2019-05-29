@@ -27,13 +27,16 @@ class _HomeState extends State<Home> {
   final realController = TextEditingController();
   final dolarController = TextEditingController();
   final euroController = TextEditingController();
+  final pesoARGController = TextEditingController();
 
   double dolar;
   double euro;
+  double pesoARG;
   void _clearAll(){
     realController.text = "";
     dolarController.text = "";
     euroController.text = "";
+    pesoARGController.text = "";
   }
 
   void _realChanged(String text){
@@ -54,6 +57,7 @@ class _HomeState extends State<Home> {
     double dolar = double.parse(text);
     realController.text = (dolar * this.dolar).toStringAsFixed(2);
     euroController.text = (dolar * this.dolar / euro).toStringAsFixed(2);
+    pesoARGController.text = (dolar * this.dolar / pesoARG).toStringAsFixed(2);
   }
 
   void _euroChanged(String text){
@@ -64,6 +68,18 @@ class _HomeState extends State<Home> {
     double euro = double.parse(text);
     realController.text = (euro * this.euro).toStringAsFixed(2);
     dolarController.text = (euro * this.euro / dolar).toStringAsFixed(2);
+    pesoARGController.text = (euro * this.euro / pesoARG).toStringAsFixed(2);
+  }
+
+  void _pesoARGChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double pesoARG = double.parse(text);
+    realController.text = (pesoARG * this.pesoARG).toStringAsFixed(2);
+    euroController.text = (pesoARG * this.pesoARG / euro).toStringAsFixed(2);
+    dolarController.text = (pesoARG * this.pesoARG / dolar).toStringAsFixed(2);
   }
 
   @override
@@ -103,6 +119,7 @@ class _HomeState extends State<Home> {
                 } else {
                   dolar = snapshot.data["results"]["currencies"]["USD"]["buy"];
                   euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
+                  pesoARG = snapshot.data["results"]["currencies"]["ARS"]["buy"];
                   return SingleChildScrollView(
                     padding: EdgeInsets.all(10.0),
                     child: Column(
@@ -113,11 +130,13 @@ class _HomeState extends State<Home> {
                           size: 150.0,
                           color: Colors.amber,
                         ),
-                        buildTextField("Reais", "R\$", realController, _realChanged),
+                        buildTextField("Reais", "R\$ ", realController, _realChanged),
                         Divider(),
-                        buildTextField("Doláres", "US\$", dolarController, _dolarChanged),
+                        buildTextField("Doláres", "US\$ ", dolarController, _dolarChanged),
                         Divider(),
-                        buildTextField("Euros", "€", euroController, _euroChanged),
+                        buildTextField("Euros", "€ ", euroController, _euroChanged),
+                        Divider(),
+                        buildTextField("Peso ARG","\$ ", pesoARGController, _pesoARGChanged,)
                       ],
                     ),
                   );
